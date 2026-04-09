@@ -1,0 +1,39 @@
+<?php
+require_once __DIR__ . '/functions.php';
+require_login();
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header('Location: index.php');
+    exit;
+}
+
+$id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
+if (!$id) {
+    set_flash('ID de relógio inválido.', 'error');
+    header('Location: index.php');
+    exit;
+}
+
+$errors = validate_relogio($_POST);
+if ($errors) {
+    set_flash(implode(' ', $errors), 'error');
+    header('Location: edit.php?id=' . $id);
+    exit;
+}
+
+try {
+    $stmt = $pdo->prepare('UPDATE relogios SET marca = :marca, cor_pulseira = :cor_pulseira, tipo = :tipo WHERE id = :id');
+    $stmt->execute([
+        ':marca' => trim($_POST['marca']),
+        ':cor_pulseira' => trim($_POST['cor_pulseira']),
+        ':tipo' => trim($_POST['tipo']),
+        ':id' => $id,
+    ]);
+    set_flash('Relógio atualizado com sucesso.', 'success');
+    header('Location: index.php');
+    exit;
+} catch (PDOException $e) {
+    set_flash('Erro ao atualizar o relógio. Tente novamente.', 'error');
+    header('Location: edit.php?id=' . $id);
+    exit;
+}

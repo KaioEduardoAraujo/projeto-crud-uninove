@@ -1,0 +1,145 @@
+/* styles.css
+   Estilos simples para o sistema CRUD de relógios. */
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f8f9fb;
+    color: #333;
+}
+.container {
+    width: min(1100px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 16px 0;
+}
+.site-header {
+    background: #1a202c;
+    color: #fff;
+    padding: 20px 0;
+}
+.site-header h1,
+.site-header p {
+    margin: 0;
+}
+.site-header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+.main-nav {
+    background: #ffffff;
+    border-bottom: 1px solid #d3d7dd;
+}
+.main-nav .container {
+    display: flex;
+    gap: 12px;
+    padding: 12px 0;
+}
+.main-nav a {
+    text-decoration: none;
+    color: #1a202c;
+    padding: 8px 14px;
+    border-radius: 6px;
+}
+.main-nav a:hover {
+    background: #e2e8f0;
+}
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.button,
+button {
+    display: inline-block;
+    padding: 10px 16px;
+    border: none;
+    color: #fff;
+    background: #2b6cb0;
+    border-radius: 6px;
+    text-decoration: none;
+    cursor: pointer;
+}
+.button.secondary,
+button.secondary {
+    background: #718096;
+}
+.button.danger,
+button.danger {
+    background: #c53030;
+}
+.card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 24px;
+    margin-top: 20px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+th, td {
+    padding: 14px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+}
+th {
+    background: #edf2f7;
+}
+.form-group {
+    margin-bottom: 16px;
+}
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e0;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+input[type="submit"],
+button[type="submit"] {
+    margin-top: 10px;
+}
+.flash {
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-top: 20px;
+}
+.flash.success {
+    background: #f0fff4;
+    border: 1px solid #9ae6b4;
+    color: #22543d;
+}
+.flash.error {
+    background: #fff5f5;
+    border: 1px solid #feb2b2;
+    color: #742a2a;
+}
+.footer {
+    margin: 40px 0 24px;
+    text-align: center;
+    color: #718096;
+}
+@media (max-width: 720px) {
+    .site-header .container,
+    .main-nav .container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .user-info {
+        justify-content: space-between;
+    }
+}

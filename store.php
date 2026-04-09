@@ -1,0 +1,31 @@
+<?php
+require_once __DIR__ . '/functions.php';
+require_login();
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header('Location: create.php');
+    exit;
+}
+
+$errors = validate_relogio($_POST);
+if ($errors) {
+    set_flash(implode(' ', $errors), 'error');
+    header('Location: create.php');
+    exit;
+}
+
+try {
+    $stmt = $pdo->prepare('INSERT INTO relogios (marca, cor_pulseira, tipo) VALUES (:marca, :cor_pulseira, :tipo)');
+    $stmt->execute([
+        ':marca' => trim($_POST['marca']),
+        ':cor_pulseira' => trim($_POST['cor_pulseira']),
+        ':tipo' => trim($_POST['tipo']),
+    ]);
+    set_flash('Relógio criado com sucesso.', 'success');
+    header('Location: index.php');
+    exit;
+} catch (PDOException $e) {
+    set_flash('Erro ao criar o relógio. Tente novamente.', 'error');
+    header('Location: create.php');
+    exit;
+}

@@ -1,0 +1,30 @@
+# Arquivos a ignorar no Git
+# Arquivos temporários
+*.tmp
+*.temp
+
+# Logs
+*.log
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+
+# Arquivos de configuração local
+config.local.php
+
+# Diretório de vendor (se usar Composer)
+vendor/
+
+# Arquivos de backup
+*.bak
+*.backup
+
+# Arquivos do IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Arquivos de teste temporários
+teste.php
