@@ -12,7 +12,7 @@ $flash = get_flash();
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Loja de Relógios</title>
+    <title>Login</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -20,7 +20,7 @@ $flash = get_flash();
         <div class="container">
             <div>
                 <h1>Login</h1>
-                <p>Acesse o sistema da loja de relógios.</p>
+                <p>Acesse o sistema da Tech Watch.</p>
             </div>
         </div>
     </header>
