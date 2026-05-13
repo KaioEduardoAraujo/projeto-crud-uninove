@@ -46,10 +46,6 @@ Sistema CRUD completo em PHP para gerenciamento de uma loja de relógios, utiliz
 - Confirmação aprimorada ao excluir: "Tem certeza que deseja excluir este produto?"
 - Design responsivo otimizado para mobile
 
-### Validações Aprimoradas
-- Validação de preço (numérico, maior que zero)
-- Validação de quantidade (inteiro, não negativo)
-
 
 ## 🛠️ Instalação
 
