@@ -12,9 +12,8 @@ Sistema CRUD completo desenvolvido em **PHP puro** com **MySQL/MariaDB** para ge
 
 ## 📋 Requisitos
 
-- **PHP** 7.4 ou superior
-- **MySQL/MariaDB** 5.7 ou superior
-- **XAMPP** ou servidor local equivalente
+- **PHP** 8.0.30
+- **XAMPP** ou servidor local equivalente (escolher versão com PHP 8.0.30 e mysql/mariadb)
 
 ## 🛠️ Instalação
 
