@@ -6,15 +6,9 @@ Sistema CRUD completo desenvolvido em **PHP puro** com **MySQL/MariaDB** para ge
 
 - ✅ **Autenticação segura** com controle de acesso (Admin e Lojista)
 - ✅ **CRUD completo** de relógios (Create, Read, Update, Delete)
-- ✅ **Gerenciamento de inventário** com preço e quantidade em estoque
-- ✅ **Seleção validada** de marca (11 opções) e cor (8 opções)
+- ✅ **Seleção validada** de marca e cor
 - ✅ **Busca e filtros** por marca e tipo de relógio
-- ✅ **Validação de combinação única** marca + cor
-- ✅ **Máscara monetária BRL** (até 000.000.000,00)
-- ✅ **Modal estilizado** para confirmação de exclusão
-- ✅ **Design responsivo** para desktop e mobile
 - ✅ **Prepared statements** para segurança contra SQL Injection
-- ✅ **Validações** de entrada no servidor e cliente
 
 ## 📋 Requisitos
 
