@@ -15,11 +15,13 @@ if ($errors) {
 }
 
 try {
-    $stmt = $pdo->prepare('INSERT INTO relogios (marca, cor_pulseira, tipo) VALUES (:marca, :cor_pulseira, :tipo)');
+    $stmt = $pdo->prepare('INSERT INTO relogios (marca, cor_pulseira, tipo, preco, quantidade_estoque) VALUES (:marca, :cor_pulseira, :tipo, :preco, :quantidade_estoque)');
     $stmt->execute([
         ':marca' => trim($_POST['marca']),
         ':cor_pulseira' => trim($_POST['cor_pulseira']),
         ':tipo' => trim($_POST['tipo']),
+        ':preco' => floatval($_POST['preco']),
+        ':quantidade_estoque' => intval($_POST['quantidade_estoque']),
     ]);
     set_flash('Relógio criado com sucesso.', 'success');
     header('Location: index.php');

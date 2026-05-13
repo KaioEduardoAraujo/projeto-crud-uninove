@@ -15,7 +15,9 @@ CREATE TABLE IF NOT EXISTS relogios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     marca VARCHAR(100) NOT NULL,
     cor_pulseira VARCHAR(50) NOT NULL,
-    tipo ENUM('smart', 'analogico', 'digital') NOT NULL
+    tipo ENUM('smart', 'analogico', 'digital') NOT NULL,
+    preco DECIMAL(10, 2) NOT NULL,
+    quantidade_estoque INT NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO usuarios (email, senha, classe) VALUES

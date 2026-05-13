@@ -22,11 +22,13 @@ if ($errors) {
 }
 
 try {
-    $stmt = $pdo->prepare('UPDATE relogios SET marca = :marca, cor_pulseira = :cor_pulseira, tipo = :tipo WHERE id = :id');
+    $stmt = $pdo->prepare('UPDATE relogios SET marca = :marca, cor_pulseira = :cor_pulseira, tipo = :tipo, preco = :preco, quantidade_estoque = :quantidade_estoque WHERE id = :id');
     $stmt->execute([
         ':marca' => trim($_POST['marca']),
         ':cor_pulseira' => trim($_POST['cor_pulseira']),
         ':tipo' => trim($_POST['tipo']),
+        ':preco' => floatval($_POST['preco']),
+        ':quantidade_estoque' => intval($_POST['quantidade_estoque']),
         ':id' => $id,
     ]);
     set_flash('Relógio atualizado com sucesso.', 'success');

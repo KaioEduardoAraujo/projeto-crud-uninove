@@ -62,6 +62,8 @@ function validate_relogio(array $data): array
     $data['marca'] = trim($data['marca'] ?? '');
     $data['cor_pulseira'] = trim($data['cor_pulseira'] ?? '');
     $data['tipo'] = trim($data['tipo'] ?? '');
+    $data['preco'] = trim($data['preco'] ?? '');
+    $data['quantidade_estoque'] = trim($data['quantidade_estoque'] ?? '');
 
     if ($data['marca'] === '') {
         $errors[] = 'O campo marca é obrigatório.';
@@ -78,6 +80,18 @@ function validate_relogio(array $data): array
     $allowedTipos = ['smart', 'analogico', 'digital'];
     if (!in_array($data['tipo'], $allowedTipos, true)) {
         $errors[] = 'O tipo selecionado não é válido.';
+    }
+
+    if ($data['preco'] === '') {
+        $errors[] = 'O campo preço é obrigatório.';
+    } elseif (!is_numeric($data['preco']) || floatval($data['preco']) < 0) {
+        $errors[] = 'O preço deve ser um número válido e maior que zero.';
+    }
+
+    if ($data['quantidade_estoque'] === '') {
+        $errors[] = 'O campo quantidade em estoque é obrigatório.';
+    } elseif (!is_numeric($data['quantidade_estoque']) || intval($data['quantidade_estoque']) < 0) {
+        $errors[] = 'A quantidade deve ser um número inteiro válido e não negativo.';
     }
 
     return $errors;

@@ -23,6 +23,14 @@ $tipos = ['smart' => 'Smart', 'analogico' => 'Analógico', 'digital' => 'Digital
                 <?php endforeach; ?>
             </select>
         </div>
+        <div class="form-group">
+            <label for="preco">Preço (R$)</label>
+            <input type="number" id="preco" name="preco" step="0.01" min="0" required>
+        </div>
+        <div class="form-group">
+            <label for="quantidade_estoque">Quantidade em Estoque</label>
+            <input type="number" id="quantidade_estoque" name="quantidade_estoque" min="0" required>
+        </div>
         <input type="submit" value="Salvar" class="button">
     </form>
 </div>

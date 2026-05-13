@@ -10,7 +10,7 @@ if (!$id) {
 }
 
 try {
-    $stmt = $pdo->prepare('SELECT id, marca, cor_pulseira, tipo FROM relogios WHERE id = :id LIMIT 1');
+    $stmt = $pdo->prepare('SELECT id, marca, cor_pulseira, tipo, preco, quantidade_estoque FROM relogios WHERE id = :id LIMIT 1');
     $stmt->execute([':id' => $id]);
     $relogio = $stmt->fetch();
 
@@ -46,6 +46,14 @@ $tipos = ['smart' => 'Smart', 'analogico' => 'Analógico', 'digital' => 'Digital
                     <option value="<?= esc($value) ?>" <?= $relogio['tipo'] === $value ? 'selected' : '' ?>><?= esc($label) ?></option>
                 <?php endforeach; ?>
             </select>
+        </div>
+        <div class="form-group">
+            <label for="preco">Preço (R$)</label>
+            <input type="number" id="preco" name="preco" step="0.01" min="0" required value="<?= esc((string)$relogio['preco']) ?>">
+        </div>
+        <div class="form-group">
+            <label for="quantidade_estoque">Quantidade em Estoque</label>
+            <input type="number" id="quantidade_estoque" name="quantidade_estoque" min="0" required value="<?= esc((string)$relogio['quantidade_estoque']) ?>">
         </div>
         <input type="submit" value="Atualizar" class="button">
     </form>
