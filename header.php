@@ -44,3 +44,68 @@ $flash = get_flash();
         <?php if ($flash): ?>
             <div class="flash <?= esc($flash['type']) ?>"> <?= esc($flash['message']) ?> </div>
         <?php endif; ?>
+
+    <!-- Modal de Exclusão -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <h3>Confirmar Exclusão</h3>
+            <p>Tem certeza que deseja excluir este relógio? Esta ação não pode ser desfeita.</p>
+            <div class="modal-actions">
+                <button type="button" class="button secondary" onclick="closeDeleteModal()">Cancelar</button>
+                <a id="deleteLink" href="#" class="button danger">Excluir</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Modal de Exclusão
+        function openDeleteModal(id) {
+            const deleteLink = document.getElementById('deleteLink');
+            deleteLink.href = 'delete.php?id=' + id;
+            document.getElementById('deleteModal').classList.add('active');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('active');
+        }
+
+        // Fechar modal ao clicar fora
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('deleteModal');
+            if (event.target === modal) {
+                closeDeleteModal();
+            }
+        });
+
+        // Máscara Monetária BRL
+        document.addEventListener('DOMContentLoaded', function() {
+            const precoInputs = document.querySelectorAll('[data-mask="currency"]');
+            
+            precoInputs.forEach(input => {
+                input.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    if (value === '') {
+                        e.target.value = '';
+                        return;
+                    }
+                    
+                    value = (parseInt(value) / 100).toLocaleString('pt-BR', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+                    e.target.value = value;
+                });
+
+                // Converter valor formatado para número antes de enviar
+                input.form.addEventListener('submit', function(e) {
+                    const numericValue = parseFloat(input.value.replace(/\./g, '').replace(',', '.'));
+                    if (isNaN(numericValue) || numericValue <= 0) {
+                        e.preventDefault();
+                        alert('Por favor, insira um preço válido.');
+                        return;
+                    }
+                    input.value = numericValue;
+                });
+            });
+        });
+    </script>

@@ -82,7 +82,7 @@ $tipos = ['smart' => 'Smart', 'analogico' => 'Analógico', 'digital' => 'Digital
                         <td class="actions-cell">
                             <a class="button icon-btn" href="edit.php?id=<?= esc((string)$relogio['id']) ?>" title="Editar">✏️ Editar</a>
                             <?php if (is_admin()): ?>
-                                <a class="button danger icon-btn" href="delete.php?id=<?= esc((string)$relogio['id']) ?>" onclick="return confirm('Tem certeza que deseja excluir este produto?');" title="Excluir">🗑️ Excluir</a>
+                                <a class="button danger icon-btn" href="#" onclick="openDeleteModal(<?= esc((string)$relogio['id']) ?>); return false;" title="Excluir">🗑️ Excluir</a>
                             <?php endif; ?>
                         </td>
                     </tr>

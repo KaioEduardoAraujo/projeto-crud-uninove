@@ -67,14 +67,14 @@ function validate_relogio(array $data): array
 
     if ($data['marca'] === '') {
         $errors[] = 'O campo marca é obrigatório.';
-    } elseif (mb_strlen($data['marca']) > 100) {
-        $errors[] = 'A marca não pode ter mais de 100 caracteres.';
+    } elseif (!in_array($data['marca'], get_marcas())) {
+        $errors[] = 'A marca selecionada não é válida.';
     }
 
     if ($data['cor_pulseira'] === '') {
         $errors[] = 'O campo cor da pulseira é obrigatório.';
-    } elseif (mb_strlen($data['cor_pulseira']) > 50) {
-        $errors[] = 'A cor da pulseira não pode ter mais de 50 caracteres.';
+    } elseif (!in_array($data['cor_pulseira'], get_cores())) {
+        $errors[] = 'A cor selecionada não é válida.';
     }
 
     $allowedTipos = ['smart', 'analogico', 'digital'];
@@ -84,14 +84,18 @@ function validate_relogio(array $data): array
 
     if ($data['preco'] === '') {
         $errors[] = 'O campo preço é obrigatório.';
-    } elseif (!is_numeric($data['preco']) || floatval($data['preco']) < 0) {
-        $errors[] = 'O preço deve ser um número válido e maior que zero.';
+    } elseif (!is_numeric($data['preco'])) {
+        $errors[] = 'O preço deve ser um número válido.';
+    } elseif (floatval($data['preco']) <= 0) {
+        $errors[] = 'O preço deve ser maior que zero.';
     }
 
     if ($data['quantidade_estoque'] === '') {
         $errors[] = 'O campo quantidade em estoque é obrigatório.';
-    } elseif (!is_numeric($data['quantidade_estoque']) || intval($data['quantidade_estoque']) < 0) {
-        $errors[] = 'A quantidade deve ser um número inteiro válido e não negativo.';
+    } elseif (!is_numeric($data['quantidade_estoque']) || floatval($data['quantidade_estoque']) != intval($data['quantidade_estoque'])) {
+        $errors[] = 'A quantidade deve ser um número inteiro válido.';
+    } elseif (intval($data['quantidade_estoque']) < 0) {
+        $errors[] = 'A quantidade em estoque não pode ser negativa.';
     }
 
     return $errors;
@@ -114,4 +118,37 @@ function validate_login(array $data): array
     }
 
     return $errors;
+}
+
+// Constantes de Seleção
+function get_marcas(): array
+{
+    return [
+        'Casio', 'Timex', 'Orient', 'Citizen', 'Seiko',
+        'Apple', 'Samsung', 'Garmin', 'Xiaomi', 'Huawei', 'Amazfit'
+    ];
+}
+
+function get_cores(): array
+{
+    return [
+        'Preto', 'Marrom', 'Azul escuro', 'Prata', 'Dourado',
+        'Branco', 'Verde', 'Vermelho'
+    ];
+}
+
+// Validação de Combinação Única (marca + cor_pulseira)
+function check_marca_cor_exists(string $marca, string $cor, ?int $exclude_id = null): bool
+{
+    global $pdo;
+    
+    if ($exclude_id === null) {
+        $stmt = $pdo->prepare('SELECT id FROM relogios WHERE marca = :marca AND cor_pulseira = :cor LIMIT 1');
+        $stmt->execute([':marca' => $marca, ':cor' => $cor]);
+    } else {
+        $stmt = $pdo->prepare('SELECT id FROM relogios WHERE marca = :marca AND cor_pulseira = :cor AND id != :id LIMIT 1');
+        $stmt->execute([':marca' => $marca, ':cor' => $cor, ':id' => $exclude_id]);
+    }
+    
+    return $stmt->fetch() !== false;
 }

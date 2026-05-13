@@ -21,11 +21,20 @@ if ($errors) {
     exit;
 }
 
+// Validar se combinação marca + cor já existe (excluindo este ID)
+$marca = trim($_POST['marca']);
+$cor = trim($_POST['cor_pulseira']);
+if (check_marca_cor_exists($marca, $cor, $id)) {
+    set_flash('Já existe outro relógio com essa combinação de marca e cor.', 'error');
+    header('Location: edit.php?id=' . $id);
+    exit;
+}
+
 try {
     $stmt = $pdo->prepare('UPDATE relogios SET marca = :marca, cor_pulseira = :cor_pulseira, tipo = :tipo, preco = :preco, quantidade_estoque = :quantidade_estoque WHERE id = :id');
     $stmt->execute([
-        ':marca' => trim($_POST['marca']),
-        ':cor_pulseira' => trim($_POST['cor_pulseira']),
+        ':marca' => $marca,
+        ':cor_pulseira' => $cor,
         ':tipo' => trim($_POST['tipo']),
         ':preco' => floatval($_POST['preco']),
         ':quantidade_estoque' => intval($_POST['quantidade_estoque']),

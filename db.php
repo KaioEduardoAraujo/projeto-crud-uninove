@@ -2,7 +2,7 @@
 $host = 'localhost';
 $db   = 'loja_relogio';
 $user = 'root';
-$pass = ''; // Senha padrão do XAMPP é vazia
+$pass = '';
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
