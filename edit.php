@@ -1,7 +1,15 @@
 <?php
+/**
+ * Formulário de Edição de Relógio
+ * 
+ * Exibe o formulário pré-preenchido com os dados do relógio para edição.
+ * Valida autenticação e existência do relógio antes de exibir.
+ */
+
 require_once __DIR__ . '/header.php';
 require_login();
 
+// Valida e obtém o ID do relógio
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 if (!$id) {
     set_flash('ID de relógio inválido.', 'error');
@@ -10,10 +18,12 @@ if (!$id) {
 }
 
 try {
+    // Busca os dados atuais do relógio
     $stmt = $pdo->prepare('SELECT id, marca, cor_pulseira, tipo, preco, quantidade_estoque FROM relogios WHERE id = :id LIMIT 1');
     $stmt->execute([':id' => $id]);
     $relogio = $stmt->fetch();
 
+    // Se não encontrar o relógio, redireciona
     if (!$relogio) {
         set_flash('Relógio não encontrado.', 'error');
         header('Location: index.php');
@@ -25,6 +35,7 @@ try {
     exit;
 }
 
+// Opções para os selects do formulário
 $tipos = ['smart' => 'Smart', 'analogico' => 'Analógico', 'digital' => 'Digital'];
 $marcas = get_marcas();
 $cores = get_cores();

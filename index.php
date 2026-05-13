@@ -1,25 +1,42 @@
 <?php
+/**
+ * Página Principal - Listagem de Relógios
+ * 
+ * Exibe a tabela de todos os relógios com suporte a:
+ * - Busca por marca (filtro textual)
+ * - Filtro por tipo (select)
+ * - Paginação (ordenado por ID DESC)
+ * - Ações de edição e exclusão
+ */
+
 require_once __DIR__ . '/header.php';
 require_login();
 
+// Recupera parâmetros de filtro da URL
 $marca = isset($_GET['marca']) ? trim($_GET['marca']) : '';
 $tipo = isset($_GET['tipo']) ? trim($_GET['tipo']) : '';
 
 try {
+    // Constrói query dinamicamente baseado nos filtros
     $query = 'SELECT id, marca, cor_pulseira, tipo, preco, quantidade_estoque FROM relogios WHERE 1=1';
     $params = [];
     
+    // Adiciona filtro de marca (busca parcial com LIKE)
     if ($marca !== '') {
         $query .= ' AND marca LIKE :marca';
         $params[':marca'] = '%' . $marca . '%';
     }
     
+    // Adiciona filtro de tipo (busca exata)
     if ($tipo !== '') {
         $query .= ' AND tipo = :tipo';
         $params[':tipo'] = $tipo;
     }
     
+    // Ordena por ID decrescente (mais recentes primeiro)
     $query .= ' ORDER BY id DESC';
+    
+    // Executa a query com prepared statement (segurança contra SQL Injection)
     $stmt = $pdo->prepare($query);
     $stmt->execute($params);
     $relogios = $stmt->fetchAll();

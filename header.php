@@ -1,7 +1,19 @@
 <?php
-// header.php
-// Cabeçalho e menu de navegação usados em todas as páginas.
+/**
+ * Cabeçalho e Estrutura Base HTML (Template Header)
+ * 
+ * Arquivo incluído no topo de todas as páginas.
+ * Contém:
+ * - Declaração HTML básica
+ * - Navegação do site
+ * - Scripts de funcionalidades globais (modal, máscaras, etc)
+ * 
+ * OBS: Não feche a tag <main> aqui! Cada página fecha seu próprio HTML.
+ */
+
 require_once __DIR__ . '/functions.php';
+
+// Recupera mensagem flash se existir
 $flash = get_flash();
 ?>
 <!DOCTYPE html>
@@ -58,18 +70,28 @@ $flash = get_flash();
     </div>
 
     <script>
-        // Modal de Exclusão
+        /**
+         * FUNCIONALIDADES JAVASCRIPT GLOBAIS
+         */
+
+        /**
+         * Abre o modal de confirmação de exclusão
+         * @param {number} id ID do relógio a ser deletado
+         */
         function openDeleteModal(id) {
             const deleteLink = document.getElementById('deleteLink');
             deleteLink.href = 'delete.php?id=' + id;
             document.getElementById('deleteModal').classList.add('active');
         }
 
+        /**
+         * Fecha o modal de exclusão
+         */
         function closeDeleteModal() {
             document.getElementById('deleteModal').classList.remove('active');
         }
 
-        // Fechar modal ao clicar fora
+        // Fechar modal ao clicar fora (no overlay)
         window.addEventListener('click', function(event) {
             const modal = document.getElementById('deleteModal');
             if (event.target === modal) {
@@ -77,18 +99,27 @@ $flash = get_flash();
             }
         });
 
-        // Máscara Monetária BRL
+        /**
+         * MÁSCARA MONETÁRIA BRL
+         * 
+         * Formata automaticamente o valor de entrada no padrão brasileiro:
+         * - Aplicado a inputs com data-mask="currency"
+         * - Converte para número antes de enviar o formulário
+         */
         document.addEventListener('DOMContentLoaded', function() {
             const precoInputs = document.querySelectorAll('[data-mask="currency"]');
             
             precoInputs.forEach(input => {
+                // Listener para formatação durante a digitação
                 input.addEventListener('input', function(e) {
+                    // Remove todos os caracteres não-numéricos
                     let value = e.target.value.replace(/\D/g, '');
                     if (value === '') {
                         e.target.value = '';
                         return;
                     }
                     
+                    // Converte para float e formata no padrão brasileiro (pt-BR)
                     value = (parseInt(value) / 100).toLocaleString('pt-BR', {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2
@@ -96,14 +127,16 @@ $flash = get_flash();
                     e.target.value = value;
                 });
 
-                // Converter valor formatado para número antes de enviar
+                // Listener para converter valor formatado para número antes de enviar
                 input.form.addEventListener('submit', function(e) {
+                    // Remove pontos (milhares) e converte vírgula em ponto (decimal)
                     const numericValue = parseFloat(input.value.replace(/\./g, '').replace(',', '.'));
                     if (isNaN(numericValue) || numericValue <= 0) {
                         e.preventDefault();
                         alert('Por favor, insira um preço válido.');
                         return;
                     }
+                    // Envia como número puro para o servidor
                     input.value = numericValue;
                 });
             });

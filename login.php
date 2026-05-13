@@ -1,9 +1,20 @@
 <?php
+/**
+ * P\u00e1gina de Login
+ * 
+ * Exibe o formul\u00e1rio de autentica\u00e7\u00e3o. Se o usu\u00e1rio j\u00e1 est\u00e1 logado,
+ * redireciona para a p\u00e1gina principal.
+ */
+
 require_once __DIR__ . '/functions.php';
+
+// Redireciona para index se j\u00e1 est\u00e1 autenticado
 if (is_logged_in()) {
     header('Location: index.php');
     exit;
 }
+
+// Recupera mensagem flash se existir (erro ou sucesso)
 $flash = get_flash();
 ?>
 <!DOCTYPE html>
