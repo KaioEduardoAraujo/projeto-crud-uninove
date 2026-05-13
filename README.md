@@ -1,153 +1,143 @@
-# PROJETO PARA AULA DE ADS UNINOVE
-# Sistema CRUD - Loja de Relógios
+# Tech Watch - Sistema CRUD de Loja de Relógios
 
-Sistema CRUD completo em PHP para gerenciamento de uma loja de relógios, utilizando PDO e MySQL/MariaDB.
+Sistema CRUD completo desenvolvido em **PHP puro** com **MySQL/MariaDB** para gerenciamento de uma loja de relógios. Implementa autenticação de usuários, controle de acesso baseado em roles e gestão completa de inventário.
 
-## 🚀 Funcionalidades v2.0
+## 🚀 Funcionalidades
 
-- ✅ Autenticação de usuários (Admin e Lojista)
-- ✅ CRUD completo de relógios (com preço e estoque)
-- ✅ Campos adicionais: preço e quantidade em estoque
-- ✅ Busca e filtro por marca
-- ✅ Filtro por tipo de relógio (Smart, Analógico, Digital)
-- ✅ Confirmação de exclusão de produtos
-- ✅ Controle de acesso baseado em roles
-- ✅ Interface moderna com espaçamento melhorado
-- ✅ Ícones nos botões de ação (✏️ editar, 🗑️ excluir)
-- ✅ Cards com bordas arredondadas
-- ✅ Validações de entrada
-- ✅ Mensagens de sucesso/erro
-- ✅ Design responsivo para mobile
+- ✅ **Autenticação segura** com controle de acesso (Admin e Lojista)
+- ✅ **CRUD completo** de relógios (Create, Read, Update, Delete)
+- ✅ **Gerenciamento de inventário** com preço e quantidade em estoque
+- ✅ **Seleção validada** de marca (11 opções) e cor (8 opções)
+- ✅ **Busca e filtros** por marca e tipo de relógio
+- ✅ **Validação de combinação única** marca + cor
+- ✅ **Máscara monetária BRL** (até 000.000.000,00)
+- ✅ **Modal estilizado** para confirmação de exclusão
+- ✅ **Design responsivo** para desktop e mobile
+- ✅ **Prepared statements** para segurança contra SQL Injection
+- ✅ **Validações** de entrada no servidor e cliente
 
 ## 📋 Requisitos
 
-- PHP 7.4 ou superior
-- MySQL/MariaDB 5.7 ou superior
-- XAMPP (recomendado) ou qualquer servidor local
-
-## ✨ Melhorias Implementadas (v2.0)
-
-### Novos Campos
-- **Preço**: Campo decimal para registrar o preço de cada relógio
-- **Quantidade em Estoque**: Controle de inventário dos produtos
-
-### Sistema de Busca e Filtros
-- Filtro por marca (busca textual)
-- Filtro por tipo (dropdown com opções)
-- Botão "Buscar" para aplicar filtros
-- Botão "Limpar Filtros" para resetar a busca
-
-### Melhorias de UI/UX
-- Cards com bordas mais arredondadas (border-radius: 16px)
-- Espaçamento aumentado em todos os elementos
-- Padding melhorado em formulários e inputs
-- Ícones nos botões (✏️ Editar, 🗑️ Excluir, 🔍 Buscar)
-- Hover effects suaves em botões
-- Confirmação aprimorada ao excluir: "Tem certeza que deseja excluir este produto?"
-- Design responsivo otimizado para mobile
-
+- **PHP** 7.4 ou superior
+- **MySQL/MariaDB** 5.7 ou superior
+- **XAMPP** ou servidor local equivalente
 
 ## 🛠️ Instalação
 
-### 1. Clonar o repositório
-```bash
-git clone https://github.com/SEU_USUARIO/loja-relogios.git
-cd loja-relogios
+### 1. Posicionar os arquivos
+
+Coloque a pasta do projeto em:
+```
+C:\xampp\htdocs\projeto-crud-uninove\
 ```
 
-### 2. Configurar o banco de dados
+### 2. Criar o banco de dados
 
-#### Opção A: Usando phpMyAdmin
-1. Abra `http://localhost/phpmyadmin`
-2. Crie um banco chamado `loja_relogio`
-3. Importe o arquivo `schema.sql`
+#### Opção A: phpMyAdmin
+1. Acesse `http://localhost/phpmyadmin`
+2. Clique em **Importar**
+3. Selecione o arquivo `schema.sql`
+4. Clique em **Executar**
 
-#### Opção B: Usando linha de comando
+#### Opção B: Terminal MySQL
 ```bash
 mysql -u root -p < schema.sql
 ```
 
-#### ⚠️ Se você já tem a versão anterior
-Se você já possui o banco de dados com a versão anterior, execute estes comandos SQL para atualizar:
-
-```sql
-ALTER TABLE relogios ADD COLUMN preco DECIMAL(10, 2) NOT NULL DEFAULT 0;
-ALTER TABLE relogios ADD COLUMN quantidade_estoque INT NOT NULL DEFAULT 0;
-```
-
-## 👥 Usuários padrão
+## 👥 Credenciais padrão
 
 | Email | Senha | Tipo |
 |-------|-------|------|
 | admin@loja.com | admin123 | Admin (pode excluir) |
-| lojista@loja.com | lojista123 | Lojista (não pode excluir) |
+| lojista@loja.com | lojista123 | Lojista (sem acesso a exclusão) |
 
 ## 🌐 Como usar
 
-1. Inicie o Apache e MySQL no XAMPP
-2. Acesse `http://localhost/loja-relogios/login.php`
-3. Faça login com um dos usuários acima
+1. Inicie Apache e MySQL no XAMPP
+2. Acesse `http://localhost/projeto-crud-uninove/login.php`
+3. Faça login com uma das credenciais acima
 4. Gerencie os relógios através da interface
 
-### Operações disponíveis:
-- **Listar Relógios**: Visualize todos os relógios com preço e estoque
-- **Filtrar por Marca**: Use a caixa de busca para encontrar relógios de uma marca específica
-- **Filtrar por Tipo**: Selecione o tipo (Smart, Analógico ou Digital) no dropdown
-- **Novo Relógio**: Clique em "Novo Relógio" para cadastrar um novo item com preço e quantidade
-- **Editar Relógio**: Clique em ✏️ para editar marca, cor, tipo, preço e estoque
-- **Excluir Relógio**: Clique em 🗑️ (apenas administradores) - será solicitada confirmação
+### Operações
+
+| Ação | Descrição |
+|------|-----------|
+| **Listar** | Visualize todos os relógios com preço e estoque |
+| **Buscar** | Filtre por marca ou tipo de relógio |
+| **Criar** | Cadastre novo relógio com marca, cor, tipo, preço e estoque |
+| **Editar** | Modifique os dados do relógio |
+| **Excluir** | Delete relógios (somente administradores) |
 
 ## 📁 Estrutura do projeto
 
 ```
-loja-relogios/
-├── db.php              # Conexão com banco de dados
-├── functions.php       # Funções auxiliares
-├── header.php          # Cabeçalho e navegação
+projeto-crud-uninove/
+├── db.php              # Configuração do banco de dados
+├── functions.php       # Funções utilitárias e validações
+├── header.php          # Cabeçalho, navegação e scripts
 ├── styles.css          # Estilos CSS
-├── schema.sql          # Estrutura do banco
-├── login.php           # Página de login
-├── autenticar.php      # Processamento do login
-├── logout.php          # Logout
-├── index.php           # Lista de relógios
+├── schema.sql          # Script de criação do banco
+│
+├── login.php           # Página de autenticação
+├── autenticar.php      # Processamento de login
+├── logout.php          # Encerramento de sessão
+│
+├── index.php           # Listagem e filtros de relógios
 ├── create.php          # Formulário de criação
-├── store.php           # Salvar novo relógio
+├── store.php           # Processamento de criação
 ├── edit.php            # Formulário de edição
-├── update.php          # Atualizar relógio
-└── delete.php          # Excluir relógio
+├── update.php          # Processamento de edição
+├── delete.php          # Processamento de exclusão
+│
+└── README.md           # Este arquivo
+```
+
+## 📊 Banco de dados
+
+### Tabela: `usuarios`
+```sql
+id              INT PRIMARY KEY AUTO_INCREMENT
+email           VARCHAR(100) UNIQUE NOT NULL
+senha           VARCHAR(255) NOT NULL
+classe          ENUM('admin', 'lojista')
+```
+
+### Tabela: `relogios`
+```sql
+id                  INT PRIMARY KEY AUTO_INCREMENT
+marca               VARCHAR(100) NOT NULL
+cor_pulseira        VARCHAR(50) NOT NULL
+tipo                ENUM('smart', 'analogico', 'digital') NOT NULL
+preco               DECIMAL(10, 2) NOT NULL
+quantidade_estoque  INT NOT NULL
+UNIQUE KEY (marca, cor_pulseira)
 ```
 
 ## 🔒 Segurança
 
-- Senhas criptografadas com `password_hash()`
-- Prepared statements para prevenir SQL Injection
-- Validação de entrada
-- Controle de sessão
+- **Senhas criptografadas** com `password_hash()` (algoritmo bcrypt)
+- **Prepared statements** para prevenir SQL Injection
+- **Validação de entrada** no servidor
+- **Controle de sessão** com proteção de acesso
+- **Validação de tipo de dados** em formulários
 
-## 📊 Banco de dados
+## 🎨 Tecnologias utilizadas
 
-### Tabela `usuarios`
-- `id` (INT, PRIMARY KEY, AUTO_INCREMENT)
-- `email` (VARCHAR 100, UNIQUE)
-- `senha` (VARCHAR 255)
-- `classe` (ENUM: 'admin', 'lojista')
+- **Backend**: PHP 7.4+
+- **Banco**: MySQL/MariaDB
+- **Frontend**: HTML5, CSS3
+- **Segurança**: PDO, Prepared Statements
 
-### Tabela `relogios`
-- `id` (INT, PRIMARY KEY, AUTO_INCREMENT)
-- `marca` (VARCHAR 100)
-- `cor_pulseira` (VARCHAR 50)
-- `tipo` (ENUM: 'smart', 'analogico', 'digital')
-- `preco` (DECIMAL 10,2) - Preço do relógio
-- `quantidade_estoque` (INT) - Quantidade disponível em estoque
+## 🆘 Troubleshooting
 
-
-## 🆘 Suporte
-
-Se encontrar problemas:
-1. Verifique se o XAMPP está rodando
-2. Confirme se o banco foi criado corretamente
-3. Verifique se não há nenhum outro software utilizando as mesmas portas que o banco de dados e o servidor local
+| Problema | Solução |
+|----------|---------|
+| Erro de conexão com BD | Verifique se MySQL está rodando e senha está correta em `db.php` |
+| Erro 404 em acesso | Certifique-se que a pasta está em `C:\xampp\htdocs\projeto-crud-uninove\` |
+| Erro ao importar schema.sql | Verifique se o banco já existe; delete e importe novamente |
+| Modal não abre | Verifique se JavaScript está habilitado no navegador |
 
 ---
 
-Projeto desenvolvido para trabalho da Universidade Nove de Julho
+**Desenvolvido para**: Universidade Nove de Julho (UNINOVE)  
+**Disciplina**: Análise e Desenvolvimento de Sistemas
