@@ -9,8 +9,9 @@
  * - Ações de edição e exclusão
  */
 
-require_once __DIR__ . '/header.php';
+require_once __DIR__ . '/functions.php';
 require_login();
+require_once __DIR__ . '/header.php';
 
 // Recupera parâmetros de filtro da URL
 $marca = isset($_GET['marca']) ? trim($_GET['marca']) : '';
