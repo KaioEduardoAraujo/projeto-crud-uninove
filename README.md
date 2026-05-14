@@ -13,7 +13,7 @@ Este é um projeto de **CRUD** (Create, Read, Update, Delete) desenvolvido em **
 
 ## 📋 Requisitos
 
-- **PHP** 8.0.30
+- **PHP 8**
 - **XAMPP** ou servidor local equivalente (escolher versão com PHP 8.0.30 e mysql/mariadb)
 
 ## 🛠️ Instalação
