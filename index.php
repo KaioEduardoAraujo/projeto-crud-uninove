@@ -1,14 +1,4 @@
 <?php
-/**
- * Página Principal - Listagem de Relógios
- * 
- * Exibe a tabela de todos os relógios com suporte a:
- * - Busca por marca (filtro textual)
- * - Filtro por tipo (select)
- * - Paginação (ordenado por ID DESC)
- * - Ações de edição e exclusão
- */
-
 require_once __DIR__ . '/functions.php';
 require_login();
 require_once __DIR__ . '/header.php';
@@ -22,7 +12,7 @@ try {
     $query = 'SELECT id, marca, cor_pulseira, tipo, preco, quantidade_estoque FROM relogios WHERE 1=1';
     $params = [];
     
-    // Adiciona filtro de marca (busca parcial com LIKE)
+    // Adiciona filtro de marca (busca parcial)
     if ($marca !== '') {
         $query .= ' AND marca LIKE :marca';
         $params[':marca'] = '%' . $marca . '%';
@@ -50,7 +40,6 @@ $tipos = ['smart' => 'Smart', 'analogico' => 'Analógico', 'digital' => 'Digital
 ?>
 <div class="card">
     <h2>Lista de Relógios</h2>
-    
     <div class="filter-section">
         <form method="get" class="filter-form">
             <div class="filter-row">

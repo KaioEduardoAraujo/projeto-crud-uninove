@@ -1,15 +1,4 @@
 <?php
-/**
- * Cabeçalho e Estrutura Base HTML (Template Header)
- * 
- * Arquivo incluído no topo de todas as páginas.
- * Contém:
- * - Declaração HTML básica
- * - Navegação do site
- * - Scripts de funcionalidades globais (modal, máscaras, etc)
- * 
- * OBS: Não feche a tag <main> aqui! Cada página fecha seu próprio HTML.
- */
 
 require_once __DIR__ . '/functions.php';
 
@@ -70,23 +59,15 @@ $flash = get_flash();
     </div>
 
     <script>
-        /**
-         * FUNCIONALIDADES JAVASCRIPT GLOBAIS
-         */
+         //Abre o modal de confirmação de exclusão
 
-        /**
-         * Abre o modal de confirmação de exclusão
-         * @param {number} id ID do relógio a ser deletado
-         */
         function openDeleteModal(id) {
             const deleteLink = document.getElementById('deleteLink');
             deleteLink.href = 'delete.php?id=' + id;
             document.getElementById('deleteModal').classList.add('active');
         }
+        //Fecha o modal de exclusão
 
-        /**
-         * Fecha o modal de exclusão
-         */
         function closeDeleteModal() {
             document.getElementById('deleteModal').classList.remove('active');
         }

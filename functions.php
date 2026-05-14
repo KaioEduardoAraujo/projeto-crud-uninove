@@ -1,15 +1,4 @@
 <?php
-/**
- * Funções Utilitárias Globais
- * 
- * Centraliza funções comuns do sistema:
- * - Gestão de sessão e autenticação
- * - Validação de formulários
- * - Operações com flash messages
- * - Sanitização de saída (XSS prevention)
- * - Validações de regra de negócio
- */
-
 session_start();
 require_once __DIR__ . '/db.php';
 
