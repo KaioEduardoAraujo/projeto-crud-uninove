@@ -1,14 +1,15 @@
 # Tech Watch - Sistema CRUD de Loja de Relógios
 
-Sistema CRUD completo desenvolvido em **PHP puro** com **MySQL/MariaDB** para gerenciamento de uma loja de relógios. Implementa autenticação de usuários, controle de acesso baseado em roles e gestão completa de inventário.
+Este é um projeto de **CRUD** (Create, Read, Update, Delete) desenvolvido em **PHP puro** com **MySQL/MariaDB**. O sistema permite gerenciar uma loja de relógios com login de usuários, diferentes níveis de acesso e validações de segurança.
 
 ## 🚀 Funcionalidades
 
-- ✅ **Autenticação segura** com controle de acesso (Admin e Lojista)
-- ✅ **CRUD completo** de relógios (Create, Read, Update, Delete)
-- ✅ **Seleção validada** de marca e cor
-- ✅ **Busca e filtros** por marca e tipo de relógio
-- ✅ **Prepared statements** para segurança contra SQL Injection
+- ✅ **Login de usuários** com senhas criptografadas
+- ✅ **Dois tipos de acesso**: Admin (total) e Lojista (sem deletar)
+- ✅ **CRUD completo**: Criar, Listar, Editar e Deletar relógios
+- ✅ **Filtros inteligentes**: Buscar por marca ou tipo
+- ✅ **Validações**: Todos os dados são validados antes de salvar
+- ✅ **Segurança**: Proteção contra SQL Injection e XSS
 
 ## 📋 Requisitos
 
@@ -108,18 +109,43 @@ UNIQUE KEY (marca, cor_pulseira)
 
 ## 🔒 Segurança
 
-- **Senhas criptografadas** com `password_hash()` (algoritmo bcrypt)
-- **Prepared statements** para prevenir SQL Injection
-- **Validação de entrada** no servidor
-- **Controle de sessão** com proteção de acesso
-- **Validação de tipo de dados** em formulários
+- **Senhas criptografadas** com `password_hash()` (bcrypt) - impossível recuperar a senha original
+- **Prepared statements** na query SQL - previne ataques de SQL Injection
+- **Sanitização XSS** com `htmlspecialchars()` - evita código malicioso no HTML
+- **Validação no servidor** - não confia apenas na validação do navegador
+- **Controle de sessão** - apenas usuários logados acessam as funções
+- **Restrição de acesso** - admin e lojista têm permissões diferentes
 
-## 🎨 Tecnologias utilizadas
+## 📚 Conceitos Importantes
 
-- **Backend**: PHP 7.4+
-- **Banco**: MySQL/MariaDB
-- **Frontend**: HTML5, CSS3
-- **Segurança**: PDO, Prepared Statements
+### O que é CRUD?
+**CRUD** significa:
+- **C**reate: Criar novo registro
+- **R**ead: Ler/listar registros
+- **U**pdate: Editar registro
+- **D**elete: Deletar registro
+
+Este projeto implementa todas essas operações em relação aos relógios.
+
+### Prepared Statements
+São comandos SQL especiais que separam os dados do código, impedindo SQL Injection.
+
+```php
+// SEM prepared statement (PERIGOSO!)
+$query = "SELECT * FROM usuarios WHERE email = '" . $_POST['email'] . "'";
+
+// COM prepared statement (SEGURO!)
+$stmt = $pdo->prepare('SELECT * FROM usuarios WHERE email = :email');
+$stmt->execute([':email' => $_POST['email']]);
+```
+
+### Duas Permissões
+- **Admin**: Pode criar, editar e deletar relógios
+- **Lojista**: Pode criar e editar, mas NÃO pode deletar
+
+Esto é verificado na função `require_admin()` que impede acesso não autorizado.
+
+
 
 ## 🆘 Troubleshooting
 

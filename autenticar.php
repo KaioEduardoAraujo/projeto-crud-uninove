@@ -1,20 +1,14 @@
 <?php
-/**
- * Processamento de Autenticação (Login)
- * 
- * Recebe credenciais do formulário de login, valida com o banco de dados
- * e cria a sessão do usuário.
- */
-
+// Processa o login do usuário
 require_once __DIR__ . '/functions.php';
 
-// Verifica se a requisição é POST
+// Só processa POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: login.php');
     exit;
 }
 
-// Valida os dados de entrada
+// Valida os dados
 $errors = validate_login($_POST);
 if ($errors) {
     set_flash(implode(' ', $errors), 'error');
@@ -22,29 +16,28 @@ if ($errors) {
     exit;
 }
 
-// Obtém e limpa os dados do formulário
+// Pega os dados
 $email = trim($_POST['email']);
 $senha = $_POST['senha'];
 
 try {
-    // Busca o usuário no banco pelo email
+    // Busca o usuário no banco
     $stmt = $pdo->prepare('SELECT id, email, senha, classe FROM usuarios WHERE email = :email LIMIT 1');
     $stmt->execute([':email' => $email]);
     $user = $stmt->fetch();
 
-    // Verifica se o usuário existe e valida a senha
-    // password_verify() compara a senha com o hash armazenado
+    // Verifica se existe e se a senha está correta
     if (!$user || !password_verify($senha, $user['senha'])) {
-        set_flash('E-mail ou senha inválidos. Verifique e tente novamente.', 'error');
+        set_flash('E-mail ou senha inválidos.', 'error');
         header('Location: login.php');
         exit;
     }
 
-    // Se credenciais são válidas, cria a sessão
+    // Se tudo ok, cria a sessão
     $_SESSION['user'] = [
         'id' => $user['id'],
         'email' => $user['email'],
-        'classe' => $user['classe'], // 'admin' ou 'lojista'
+        'classe' => $user['classe'],
     ];
 
     set_flash('Login realizado com sucesso.', 'success');

@@ -1,24 +1,17 @@
 <?php
-/**
- * Arquivo de Configuração e Conexão com o Banco de Dados
- * 
- * Define os parâmetros de conexão MySQL/MariaDB usando PDO.
- * PDO oferece uma camada de abstração segura contra SQL Injection.
- */
-
+// Configuração de conexão com o banco de dados
 $host = 'localhost';
 $db   = 'loja_relogio';
 $user = 'root';
-$pass = ''; // Senha padrão do XAMPP
+$pass = ''; // Sem senha (padrão do XAMPP)
 $charset = 'utf8mb4';
 
-// String de conexão (DSN - Data Source Name)
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
 
-// Opções do PDO para melhor controle de erros e resultados
+// Opções do PDO
 $options = [
-    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION, // Lança exceções em caso de erro
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,       // Retorna arrays associativos
+    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION, // Mostra erros
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,       // Retorna dados como array
 ];
 
 try {

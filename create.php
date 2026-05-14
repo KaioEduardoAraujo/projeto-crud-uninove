@@ -1,18 +1,12 @@
 <?php
-/**
- * Formulário de Criação de Relógio
- * 
- * Exibe o formulário para adicionar um novo relógio ao sistema.
- * Valida autenticação antes de permitir acesso.
- */
-
+// Página para criar um novo relógio
 require_once __DIR__ . '/header.php';
 require_login();
 
-// Opções de tipos de relógios disponíveis
+// Tipos de relógio
 $tipos = ['smart' => 'Smart', 'analogico' => 'Analógico', 'digital' => 'Digital'];
 
-// Funções que retornam as opções de marca e cor pré-definidas
+// Opções de marca e cor
 $marcas = get_marcas();
 $cores = get_cores();
 ?>

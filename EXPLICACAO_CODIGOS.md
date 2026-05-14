@@ -10,6 +10,14 @@
 - **Deletar relógio** (DELETE - apenas admin)
 - **Filtrar relógios** por marca e tipo
 
+## 📑 Índice
+
+1. [Estrutura de Arquivos](#-estrutura-de-arquivos)
+2. [Banco de Dados](#-banco-de-dados)
+3. [Segurança Implementada](#-conceitos-de-segurança-implementados)
+4. [Conceitos Importantes](#-conceitos-importantes)
+5. [Explicação dos Arquivos](#-explicação-dos-arquivos)
+
 ---
 
 ## 📂 Estrutura de Arquivos
@@ -101,18 +109,10 @@ Checa login + verifica se é admin, senão redireciona.
 ### Funções de Mensagens (Flash Messages)
 
 #### `set_flash()` - Guarda mensagem para próxima página
-```php
-$_SESSION['flash'] = [
-    'message' => 'Relógio criado!',
-    'type' => 'success' // ou 'error'
-];
-```
-**Uso:** Salva mensagem que desaparece após ser exibida (tipo um aviso único).
+Salva mensagem na sessão que será exibida uma única vez (veja seção de conceitos para mais detalhes).
 
 #### `get_flash()` - Recupera e limpa a mensagem
-```php
-$flash = get_flash(); // Lê e deleta da sessão
-```
+Lê a mensagem da sessão e a remove.
 
 ### Funções de Segurança
 
@@ -151,12 +151,7 @@ Verifica se:
 ```
 
 #### `check_marca_cor_exists()` - Verifica duplicatas
-```php
-// Na criação
-check_marca_cor_exists('Apple', 'Preto');
-
-check_marca_cor_exists('Apple', 'Preto', 5);
-```
+Veja a seção **"Entendendo check_marca_cor_exists()"** mais adiante para detalhes.
 
 ---
 
@@ -349,55 +344,199 @@ Principais classes:
 
 ## 🔒 Conceitos de Segurança Implementados
 
-### 1. **SQL Injection Prevention**
+### 1. **Prepared Statements (Evita SQL Injection)**
 ```php
 // ❌ ERRADO (vulnerável):
+$email = $_POST['email'];
 $query = "SELECT * FROM usuarios WHERE email = '$email'";
+// Se digitar: admin' OR '1'='1 ==> Query fica quebrada!
 
 // ✅ CERTO (seguro):
 $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE email = :email");
 $stmt->execute([':email' => $email]);
+// Os dados ficam SEPARADOS da query SQL
 ```
-**Prepared Statements** separam código SQL dos dados.
+**Por que funciona?** O `prepare()` apenas "configura" a query, depois `execute()` coloca os dados de forma segura, sem interpretar caracteres especiais.
 
-### 2. **XSS Prevention**
+### 2. **XSS Prevention (Evita scripts maliciosos)**
 ```php
-<h1><?= esc($usuario_input) ?></h1>
+// ❌ ERRADO:
+echo "<h1>" . $_POST['nome'] . "</h1>";
+// Se digitarem: <script>alert('hacked')</script>
+// Isso executa o script!
+
+// ✅ CORRETO:
+echo "<h1>" . esc($_POST['nome']) . "</h1>";
+// esc() converte < em &lt; e > em &gt;
+// O navegador mostra o texto literal, não executa
 ```
-A função `esc()` converte `<` em `&lt;`, impedindo scripts maliciosos.
 
-### 3. **Password Hashing**
+### 3. **Password Hashing (Senhas com segurança)**
 ```php
-$hash = password_hash('senha123', PASSWORD_BCRYPT);
-if (password_verify('senha123', $hash)) {
-    // Senha correta!
+// ❌ ERRADO:
+$senha_hash = $_POST['senha']; // Texto plano no BD!
+
+// ✅ CORRETO:
+$senha_hash = password_hash($_POST['senha'], PASSWORD_BCRYPT);
+// Gera hash impossível de reverter
+
+// Ao fazer login:
+if (password_verify('senha_digitada', $hash_do_BD)) {
+    echo 'Login OK';
 }
 ```
-Senhas nunca são armazenadas em texto plano, sempre com hash criptográfico.
+**Exemplo:** Se a senha `admin123` vira:
+```
+$2y$10$nOUIs5kJ7naTuTFkWK1Be.4kxDXrC6AJJQ1NwNvmhuMlL2MoQXikm
+```
+Nunca ninguém consegue descobrir que é `admin123` olhando o BD!
+
+### 4. **Validação em Cascade (Um filtro após outro)**
+Cada página que processa dados faz suas próprias validações:
+```
+create.php (página HTML)
+    ↓
+store.php (processa)
+    ↓
+validate_relogio() (valida cada campo)
+    ↓
+check_marca_cor_exists() (valida duplicata)
+    ↓
+PDO->prepare()->execute() (banco valida constraint UNIQUE)
+```
+Se qualquer validação falhar, volta com erro. Nada entra inválido no BD.
 
 ---
 
-## 📊 Fluxo Completo: Criar um Relógio
+---
 
+## 🔤 Entendendo filter_input()
+
+Essa função filtra e valida dados de entrada:
+```php
+// De URL: ?id=5
+$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+// Retorna 5 se é inteiro válido
+// Retorna FALSE se for: "abc", "5.5", "5a", etc
+
+// De POST:
+$email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
 ```
-1. Usuário acessa /create.php
-   ↓
-2. create.php valida login e carrega formulário
-   ↓
-3. Usuário preenche e clica "Salvar"
-   ↓
-4. Dados vão para /store.php (POST)
-   ↓
-5. store.php valida tudo
-   - Marca existente?
-   - Cor existente?
-   - Preço positivo?
-   - Marca+Cor não duplica?
-   ↓
-6. Se OK → INSERT no BD
-   Se erro → volta para create.php com mensagem
-   ↓
-7. Redireciona para index.php com mensagem de sucesso
+
+**Por que usar?** Para evitar erros. Se alguém digitar `/edit.php?id=abc`, o código não quebra, apenas não carrega o relógio.
+
+---
+
+## 💬 Entendendo Flash Messages
+
+"Flash" significa que a mensagem aparece UMA ÚNICA VEZ e depois some:
+```php
+// Em store.php, após salvar:
+set_flash('Relógio criado com sucesso!', 'success');
+header('Location: index.php');
+
+// Em index.php, carrega a mensagem:
+$flash = get_flash();
+if ($flash) {
+    echo '<div class="flash ' . $flash['type'] . '">';
+    echo $flash['message'];
+    echo '</div>';
+    // Depois que exibe, unset() na sessão, então não aparece mais
+}
+```
+**Por que fazer assim?** Se recarregar a página, a mensagem não aparece de novo. É usada apenas uma vez.
+
+---
+
+## 🔍 Entendendo check_marca_cor_exists()
+
+Essa função impede que dois relógios iguais (mesma marca E cor) sejam criados:
+
+### Na criação (store.php):
+```php
+if (check_marca_cor_exists('Apple', 'Preto')) {
+    erro('Já existe!');
+    exit;
+}
+// Query: SELECT id FROM relogios WHERE marca = 'Apple' AND cor_pulseira = 'Preto'
+```
+
+### Na edição (update.php) - **CUIDADO!**
+```php
+// Se não passasse o $exclude_id, o relógio conflitaria com ele mesmo!
+if (check_marca_cor_exists('Apple', 'Preto', 5)) { // 5 = ID atual
+    erro('Já existe!');
+    exit;
+}
+// Query: SELECT id FROM relogios 
+//        WHERE marca = 'Apple' AND cor_pulseira = 'Preto' 
+//        AND id != 5  // <-- Exclui ele mesmo
+```
+**Exemplo do problema:**
+- Relógio ID 5: Apple, Preto
+- Usuário edita e manda salvar mesmos dados
+- Sem exclude_id: Encontraria o ID 5 e recusaria com erro!
+- Com exclude_id=5: Ignora o ID 5 e deixa salvar
+
+---
+
+## 📄 Arquivo: index.php (READ - Listar)
+**O que faz:** Exibe lista de relógios com filtros
+
+### O código tricky: Filtros dinâmicos
+
+```php
+// Pega os filtros da URL: ?marca=Apple&tipo=smart
+$marca = isset($_GET['marca']) ? trim($_GET['marca']) : '';
+$tipo = isset($_GET['tipo']) ? trim($_GET['tipo']) : '';
+
+// Começa com query base (WHERE 1=1 é sempre true, é um truque)
+$query = 'SELECT * FROM relogios WHERE 1=1';
+$params = [];
+
+// Só adiciona filtro de marca se preencheu
+if ($marca !== '') {
+    $query .= ' AND marca LIKE :marca';
+    $params[':marca'] = '%' . $marca . '%';  // % = qualquer coisa
+}
+
+// Só adiciona filtro de tipo se selecionou
+if ($tipo !== '') {
+    $query .= ' AND tipo = :tipo';
+    $params[':tipo'] = $tipo;
+}
+
+// Monta a query dinamicamente!
+// Se marca vazia e tipo vazio:
+//   SELECT * FROM relogios WHERE 1=1
+// Se marca='Apple' e tipo vazio:
+//   SELECT * FROM relogios WHERE 1=1 AND marca LIKE '%Apple%'
+// Se marca='Apple' e tipo='smart':
+//   SELECT * FROM relogios WHERE 1=1 AND marca LIKE '%Apple%' AND tipo = 'smart'
+
+$stmt = $pdo->prepare($query);
+$stmt->execute($params); // Passa os valores de forma segura
+$relogios = $stmt->fetchAll();
+```
+
+**Por que `LIKE` na marca e `=` no tipo?**
+- Marca: Busca parcial ("Cas" encontra "Casio")
+- Tipo: Busca exata ("smart" ou nada)
+
+**Por que `WHERE 1=1`?**
+Porque assim sempre temos um WHERE válido, e podemos adicionar mais condições com AND sem se preocupar:
+```
+WHERE 1=1 AND marca='...' AND tipo='...'
+```
+Em vez de:
+```
+WHERE AND marca='...' AND tipo='...'  // Erro!
+```
+
+### Não confunda:
+- **isset()**: Verifica se a variável existe
+- **trim()**: Remove espaços em branco
+- **LIKE**: Busca parcial com `%`
 ```
 
 ---

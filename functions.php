@@ -2,18 +2,13 @@
 session_start();
 require_once __DIR__ . '/db.php';
 
-/**
- * Verifica se um usuário está autenticado
- * @return bool True se há usuário na sessão
- */
+// Verifica se o usuário está logado
 function is_logged_in(): bool
 {
     return !empty($_SESSION['user']);
 }
 
-/**
- * Força autenticação - Redireciona para login se não autenticado
- */
+// Força o usuário fazer login antes de acessar a página
 function require_login(): void
 {
     if (!is_logged_in()) {
@@ -23,9 +18,7 @@ function require_login(): void
     }
 }
 
-/**
- * Força acesso de administrador - Redireciona se não for admin
- */
+// Só permite acesso se for admin
 function require_admin(): void
 {
     require_login();
@@ -36,20 +29,13 @@ function require_admin(): void
     }
 }
 
-/**
- * Verifica se o usuário logado é administrador
- * @return bool True se classe == 'admin'
- */
+// Verifica se o usuário é admin
 function is_admin(): bool
 {
     return is_logged_in() && isset($_SESSION['user']['classe']) && $_SESSION['user']['classe'] === 'admin';
 }
 
-/**
- * Define uma mensagem flash para exibir uma única vez
- * @param string $message Mensagem a exibir
- * @param string $type Tipo: 'success' ou 'error'
- */
+// Salva uma mensagem para mostrar na próxima página
 function set_flash(string $message, string $type = 'success'): void
 {
     $_SESSION['flash'] = [
@@ -58,10 +44,7 @@ function set_flash(string $message, string $type = 'success'): void
     ];
 }
 
-/**
- * Recupera e limpa a mensagem flash
- * @return array|null Array com 'message' e 'type' ou null
- */
+// Pega a mensagem e a apaga da sessão
 function get_flash(): ?array
 {
     if (!empty($_SESSION['flash'])) {
@@ -72,29 +55,13 @@ function get_flash(): ?array
     return null;
 }
 
-/**
- * Sanitiza valor para segurança XSS
- * @param string $value Valor a sanitizar
- * @return string Valor escapado para saída em HTML
- */
+// Protege o texto contra ataques XSS (deixa seguro pra mostrar no HTML)
 function esc(string $value): string
 {
     return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
-/**
- * Valida dados de um relógio antes de inserir/atualizar
- * 
- * Valida:
- * - Marca: obrigatória e deve estar na lista pré-definida
- * - Cor: obrigatória e deve estar na lista pré-definida
- * - Tipo: deve ser 'smart', 'analogico' ou 'digital'
- * - Preço: numérico e maior que zero
- * - Quantidade em estoque: inteiro não-negativo
- * 
- * @param array $data Dados do formulário
- * @return array Array de mensagens de erro (vazio se válido)
- */
+// Valida os dados do relógio (marca, cor, tipo, preço, estoque)
 function validate_relogio(array $data): array
 {
     $errors = [];
@@ -145,16 +112,7 @@ function validate_relogio(array $data): array
     return $errors;
 }
 
-/**
- * Valida dados de login
- * 
- * Valida:
- * - Email: obrigatório e formato válido
- * - Senha: obrigatória
- * 
- * @param array $data Dados do formulário de login
- * @return array Array de mensagens de erro (vazio se válido)
- */
+// Valida email e senha do formulário de login
 function validate_login(array $data): array
 {
     $errors = [];
@@ -176,10 +134,7 @@ function validate_login(array $data): array
     return $errors;
 }
 
-/**
- * Retorna lista de marcas pré-definidas
- * @return array Lista de marcas disponíveis
- */
+// Retorna as marcas de relógio disponíveis
 function get_marcas(): array
 {
     return [
@@ -188,10 +143,7 @@ function get_marcas(): array
     ];
 }
 
-/**
- * Retorna lista de cores de pulseira pré-definidas
- * @return array Lista de cores disponíveis
- */
+// Retorna as cores de pulseira disponíveis
 function get_cores(): array
 {
     return [
@@ -200,27 +152,17 @@ function get_cores(): array
     ];
 }
 
-/**
- * Verifica se já existe um relógio com essa combinação de marca + cor
- * 
- * Usada para validar a constraint de unicidade (UNIQUE KEY unique_marca_cor).
- * O parâmetro $exclude_id permite verificar sem contar o próprio relógio ao editar.
- * 
- * @param string $marca Marca do relógio
- * @param string $cor Cor da pulseira
- * @param int|null $exclude_id ID do relógio atual (null em criação, ID em edição)
- * @return bool True se a combinação já existe
- */
+// Verifica se já existe um relógio com essa marca e cor
+// $exclude_id é usado na edição para não comparar o relógio com ele mesmo
 function check_marca_cor_exists(string $marca, string $cor, ?int $exclude_id = null): bool
 {
     global $pdo;
     
-    // Se não há ID para excluir, apenas verifica a existência
     if ($exclude_id === null) {
         $stmt = $pdo->prepare('SELECT id FROM relogios WHERE marca = :marca AND cor_pulseira = :cor LIMIT 1');
         $stmt->execute([':marca' => $marca, ':cor' => $cor]);
     } else {
-        // Se há ID, verifica excluindo esse ID (para não validar contra ele mesmo em edições)
+        // Na edição, exclui o relógio atual para não conflitar consigo mesmo
         $stmt = $pdo->prepare('SELECT id FROM relogios WHERE marca = :marca AND cor_pulseira = :cor AND id != :id LIMIT 1');
         $stmt->execute([':marca' => $marca, ':cor' => $cor, ':id' => $exclude_id]);
     }

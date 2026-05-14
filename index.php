@@ -3,31 +3,31 @@ require_once __DIR__ . '/functions.php';
 require_login();
 require_once __DIR__ . '/header.php';
 
-// Recupera parâmetros de filtro da URL
+// Pega os filtros da URL
 $marca = isset($_GET['marca']) ? trim($_GET['marca']) : '';
 $tipo = isset($_GET['tipo']) ? trim($_GET['tipo']) : '';
 
 try {
-    // Constrói query dinamicamente baseado nos filtros
+    // Monta a query dependendo dos filtros
     $query = 'SELECT id, marca, cor_pulseira, tipo, preco, quantidade_estoque FROM relogios WHERE 1=1';
     $params = [];
     
-    // Adiciona filtro de marca (busca parcial)
+    // Se tiver filtro de marca, adiciona na query
     if ($marca !== '') {
         $query .= ' AND marca LIKE :marca';
         $params[':marca'] = '%' . $marca . '%';
     }
     
-    // Adiciona filtro de tipo (busca exata)
+    // Se tiver filtro de tipo, adiciona na query
     if ($tipo !== '') {
         $query .= ' AND tipo = :tipo';
         $params[':tipo'] = $tipo;
     }
     
-    // Ordena por ID decrescente (mais recentes primeiro)
+    // Ordena pelo mais recente
     $query .= ' ORDER BY id DESC';
     
-    // Executa a query com prepared statement (segurança contra SQL Injection)
+    // Executa com prepared statement (protége contra SQL Injection)
     $stmt = $pdo->prepare($query);
     $stmt->execute($params);
     $relogios = $stmt->fetchAll();
